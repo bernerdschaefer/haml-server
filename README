@@ -1,0 +1,6 @@
+haml-server
+===========
+
+A simple server for serving up a directory of `HTML` and `HAML` files. Check
+out the `rocco` generated docs for more information at
+http://bernerdschaefer.github.com/haml-server

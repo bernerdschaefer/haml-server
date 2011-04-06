@@ -1,0 +1,91 @@
+#!/usr/bin/env ruby
+
+# **haml-server** is a dead-simple Sinatra app for serving up a directory of
+# files. There are a few other projects much more ambitious than this (such as
+# [serve][1]), but haml-server's goal is simple: serve haml files. Why? Because
+# writing `HTML` is a pain -- especially when you're just putting together a
+# prototype, or, say, testing out some javascript behavior.
+#
+# [1]: https://github.com/jlong/serve
+
+#### Usage
+
+# Think of `haml-server` as `python -m SimpleHTTPServer`... but for `HAML`!
+#
+#     haml-server # serves the current directory at localhost:4567
+#     haml-server . # ^ same as above
+#     haml-server -p 8000 sub/dir
+#
+# Visiting `http://localhost:4567/` will render `index.haml`. Visiting
+# `/path/to/resource` will render `path/to/resource.haml`. Simple.
+#
+# You can also create a file called "layout.haml" to apply a layout to each of
+# your pages:
+#
+#     # layout.haml
+#     %html
+#       %body
+#         = yield
+
+#### The code
+
+# `HAML`, check!
+require "haml"
+
+# Okay. In any other context, this would be pretty evil. Let me explain.
+# Sinatra is a well-behaving citizen, and calls `ARGV.dup` before parsing its
+# options.  Unfortunately for us, that means if we want to easily add
+# additional arguments, we either have to 1) re-parse `ARGV` (which would mean
+# copying the options from `sinatra/main.rb`) or 2) just redefine `ARGV.dup`.
+# Should be clear which one I prefer.
+def ARGV.dup
+  self
+end
+
+# Yep. This is a hack, too. Sinatra only automatically runs itself when the
+# file is directly called -- but that's not the case when running through
+# rubygem's wrapped command. Solution? Just pretend we were executed directly.
+$0 = __FILE__
+
+# And now we can load sinatra, knowing that the options will be parsed out of
+# `ARGV` and the server will start automatically.
+require "sinatra"
+
+# I love Pathname. This line works just like you'd expect it to:
+#
+#     Pathname("/data/foo") + "." # => /data/foo
+#     Pathname("/data/foo") + "../" # => /data
+#     Pathname("/data/foo") + "/data" # => /data
+#
+require "pathname"
+
+template_dir = Pathname(Dir.pwd) + (ARGV.shift || ".")
+
+set :public, template_dir
+set :views , template_dir
+
+# If a favicon wasn't already matched by the public handler, just return a 404.
+get "/favicon.ico" do
+  404
+end
+
+# This is our basic handler for all requests that come through to Sinatra. We
+# match `GET`, `PUT`, `POST`, and `DELETE` requests with "/*", and Sinatra the
+# path in `params[:splat]`. Since we've only got one splat, we grab the first
+# one.
+handler = lambda do
+  path = params[:splat].first
+
+  # If the path is empty, it's a request for the index page. Otherwise, we
+  # render the `HAML` template with the same name.
+  haml path == "" ? :index : path.to_sym
+end
+
+# Now we bind our handler to all of the `HTTP` verbs.
+get    "/*", &handler
+put    "/*", &handler
+post   "/*", &handler
+delete "/*", &handler
+
+# And that's it! We let Sinatra handle the rest: it will parse out any provided
+# options (see `haml-server -h`) and then run the server for us.
