@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>haml-server</title>
+  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>haml-server</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p><strong>haml-server</strong> is a dead-simple Sinatra app for serving up a directory of
+files. There are a few other projects much more ambitious than this (such as
+<a href="https://github.com/bernerdschaefer/haml-server">serve</a>), but haml-server&rsquo;s goal is simple: serve haml files. Why? Because
+writing <code>HTML</code> is a pain &mdash; especially when you&rsquo;re just putting together a
+prototype, or, say, testing out some javascript behavior.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Installation'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Installation">&#182;</a>
+        </div>
+        <h3>Installation</h3>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>This is the easy part! Run this from your default ruby (or default RVM ruby)
+so you have access to <code>haml-server</code> from wherever you are.</p>
+
+<pre><code>gem install haml-server
+</code></pre>
+
+<p>You can also grab the code from <a href="https://github.com/bernerdschaefer/haml-server">github</a>.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Usage'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Usage">&#182;</a>
+        </div>
+        <h3>Usage</h3>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>Think of <code>haml-server</code> as <code>python -m SimpleHTTPServer</code>&hellip; but for <code>HAML</code>!</p>
+
+<pre><code>haml-server # serves the current directory at localhost:4567
+haml-server . # ^ same as above
+haml-server -p 8000 sub/dir
+</code></pre>
+
+<p>Visiting <code>http://localhost:4567/</code> will render <code>index.haml</code>. Visiting
+<code>/path/to/resource</code> will render <code>path/to/resource.haml</code>. Simple.</p>
+
+<p>You can also create a file called &ldquo;layout.haml&rdquo; to apply a layout to each of
+your pages:</p>
+
+<pre><code># layout.haml
+%html
+  %body
+    = yield
+</code></pre>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-The_code'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-The_code">&#182;</a>
+        </div>
+        <h3>The code</h3>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p><code>HAML</code>, check!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">require</span> <span class="s2">&quot;haml&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>Okay. In any other context, this would be pretty evil. Let me explain.
+Sinatra is a well-behaving citizen, and calls <code>ARGV.dup</code> before parsing its
+options.  Unfortunately for us, that means if we want to easily add
+additional arguments, we either have to 1) re-parse <code>ARGV</code> (which would mean
+copying the options from <code>sinatra/main.rb</code>) or 2) just redefine <code>ARGV.dup</code>.
+Should be clear which one I prefer.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">def</span> <span class="nc">ARGV</span><span class="o">.</span><span class="nf">dup</span>
+  <span class="nb">self</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>Yep. This is a hack, too. Sinatra only automatically runs itself when the
+file is directly called &mdash; but that&rsquo;s not the case when running through
+rubygem&rsquo;s wrapped command. Solution? Just pretend we were executed directly.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="vg">$0</span> <span class="o">=</span> <span class="bp">__FILE__</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-11'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-11">&#182;</a>
+        </div>
+        <p>And now we can load sinatra, knowing that the options will be parsed out of
+<code>ARGV</code> and the server will start automatically.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">require</span> <span class="s2">&quot;sinatra&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>I love Pathname. This line works just like you&rsquo;d expect it to:</p>
+
+<pre><code>Pathname("/data/foo") + "." # =&gt; /data/foo
+Pathname("/data/foo") + "../" # =&gt; /data
+Pathname("/data/foo") + "/data" # =&gt; /data
+</code></pre>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">require</span> <span class="s2">&quot;pathname&quot;</span>
+
+<span class="n">template_dir</span> <span class="o">=</span> <span class="no">Pathname</span><span class="p">(</span><span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="no">ARGV</span><span class="o">.</span><span class="n">shift</span> <span class="o">||</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+
+<span class="n">set</span> <span class="ss">:public</span><span class="p">,</span> <span class="n">template_dir</span>
+<span class="n">set</span> <span class="ss">:views</span> <span class="p">,</span> <span class="n">template_dir</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-13'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-13">&#182;</a>
+        </div>
+        <p>If a favicon wasn&rsquo;t already matched by the public handler, just return a 404.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">get</span> <span class="s2">&quot;/favicon.ico&quot;</span> <span class="k">do</span>
+  <span class="mi">404</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <p>This is our basic handler for all requests that come through to Sinatra. We
+match <code>GET</code>, <code>PUT</code>, <code>POST</code>, and <code>DELETE</code> requests with &ldquo;/*&rdquo;, and Sinatra the
+path in <code>params[:splat]</code>. Since we&rsquo;ve only got one splat, we grab the first
+one.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">handler</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:splat</span><span class="o">].</span><span class="n">first</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-15'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-15">&#182;</a>
+        </div>
+        <p>If the path is empty, it&rsquo;s a request for the index page. Otherwise, we
+render the <code>HAML</code> template with the same name.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">haml</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="p">?</span> <span class="ss">:index</span> <span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">to_sym</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <p>Now we bind our handler to all of the <code>HTTP</code> verbs.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">get</span>    <span class="s2">&quot;/*&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span>
+<span class="n">put</span>    <span class="s2">&quot;/*&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span>
+<span class="n">post</span>   <span class="s2">&quot;/*&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span>
+<span class="n">delete</span> <span class="s2">&quot;/*&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-17'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-17">&#182;</a>
+        </div>
+        <p>And that&rsquo;s it! We let Sinatra handle the rest: it will parse out any provided
+options (see <code>haml-server -h</code>) and then run the server for us.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
