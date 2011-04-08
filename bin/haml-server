@@ -8,6 +8,17 @@
 #
 # [1]: https://github.com/jlong/serve
 
+#### Installation
+
+# This is the easy part! Run this from your default ruby (or default RVM ruby)
+# so you have access to `haml-server` from wherever you are.
+#
+#     gem install haml-server
+#
+# You can also grab the code from [github][1].
+#
+# [1]: https://github.com/bernerdschaefer/haml-server
+
 #### Usage
 
 # Think of `haml-server` as `python -m SimpleHTTPServer`... but for `HAML`!
