@@ -95,14 +95,76 @@ haml-server -p 8000 sub/dir
 
 <p>Visiting <code>http://localhost:4567/</code> will render <code>index.haml</code>. Visiting
 <code>/path/to/resource</code> will render <code>path/to/resource.haml</code>. Simple.</p>
-
-<p>You can also create a file called &ldquo;layout.haml&rdquo; to apply a layout to each of
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Layouts'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Layouts">&#182;</a>
+        </div>
+        <h4>Layouts</h4>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>You can also create a file called &ldquo;layout.haml&rdquo; to apply a layout to each of
 your pages:</p>
 
 <pre><code># layout.haml
 %html
   %body
     = yield
+</code></pre>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-SASS'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-SASS">&#182;</a>
+        </div>
+        <h4>SASS</h4>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-10'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-10">&#182;</a>
+        </div>
+        <p>If you want to use SASS templates, you can either define them inline using
+HAML&rsquo;s filters, like so:</p>
+
+<pre><code># index.haml
+%html
+  %head
+    :sass
+      .content
+        width: 10px
+</code></pre>
+
+<p>Or you can write them to a standalone file, and then link to the same file
+but with &ldquo;.css&rdquo; instead of &ldquo;.sass&rdquo;. So if you had <code>/stylesheets/screen.sass</code>,
+then you might do this in your layout:</p>
+
+<pre><code># layout.haml
+%html
+  %head
+    :css
+      @import url(/stylesheets/screen.css);
 </code></pre>
       </td>
       <td class=code>
@@ -120,10 +182,10 @@ your pages:</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-8'>
+    <tr id='section-12'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-8">&#182;</a>
+          <a class="pilcrow" href="#section-12">&#182;</a>
         </div>
         <p><code>HAML</code>, check!</p>
       </td>
@@ -131,10 +193,10 @@ your pages:</p>
         <div class='highlight'><pre><span class="nb">require</span> <span class="s2">&quot;haml&quot;</span></pre></div>
       </td>
     </tr>
-    <tr id='section-9'>
+    <tr id='section-13'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-9">&#182;</a>
+          <a class="pilcrow" href="#section-13">&#182;</a>
         </div>
         <p>Okay. In any other context, this would be pretty evil. Let me explain.
 Sinatra is a well-behaving citizen, and calls <code>ARGV.dup</code> before parsing its
@@ -149,10 +211,10 @@ Should be clear which one I prefer.</p>
 <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-10'>
+    <tr id='section-14'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-10">&#182;</a>
+          <a class="pilcrow" href="#section-14">&#182;</a>
         </div>
         <p>Yep. This is a hack, too. Sinatra only automatically runs itself when the
 file is directly called &mdash; but that&rsquo;s not the case when running through
@@ -162,10 +224,10 @@ rubygem&rsquo;s wrapped command. Solution? Just pretend we were executed directl
         <div class='highlight'><pre><span class="vg">$0</span> <span class="o">=</span> <span class="bp">__FILE__</span></pre></div>
       </td>
     </tr>
-    <tr id='section-11'>
+    <tr id='section-15'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-11">&#182;</a>
+          <a class="pilcrow" href="#section-15">&#182;</a>
         </div>
         <p>And now we can load sinatra, knowing that the options will be parsed out of
 <code>ARGV</code> and the server will start automatically.</p>
@@ -174,10 +236,10 @@ rubygem&rsquo;s wrapped command. Solution? Just pretend we were executed directl
         <div class='highlight'><pre><span class="nb">require</span> <span class="s2">&quot;sinatra&quot;</span></pre></div>
       </td>
     </tr>
-    <tr id='section-12'>
+    <tr id='section-16'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-12">&#182;</a>
+          <a class="pilcrow" href="#section-16">&#182;</a>
         </div>
         <p>I love Pathname. This line works just like you&rsquo;d expect it to:</p>
 
@@ -195,10 +257,10 @@ Pathname("/data/foo") + "/data" # =&gt; /data
 <span class="n">set</span> <span class="ss">:views</span> <span class="p">,</span> <span class="n">template_dir</span></pre></div>
       </td>
     </tr>
-    <tr id='section-13'>
+    <tr id='section-17'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-13">&#182;</a>
+          <a class="pilcrow" href="#section-17">&#182;</a>
         </div>
         <p>If a favicon wasn&rsquo;t already matched by the public handler, just return a 404.</p>
       </td>
@@ -208,52 +270,107 @@ Pathname("/data/foo") + "/data" # =&gt; /data
 <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-14'>
+    <tr id='section-18'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-14">&#182;</a>
+          <a class="pilcrow" href="#section-18">&#182;</a>
         </div>
-        <p>This is our basic handler for all requests that come through to Sinatra. We
-match <code>GET</code>, <code>PUT</code>, <code>POST</code>, and <code>DELETE</code> requests with &ldquo;/*&rdquo;, and Sinatra the
-path in <code>params[:splat]</code>. Since we&rsquo;ve only got one splat, we grab the first
-one.</p>
+        <p>This is our basic handler for all requests that come through to Sinatra.
+We&rsquo;ll extract the necessary path information, and then render either a haml
+or sass file.</p>
       </td>
       <td class=code>
         <div class='highlight'><pre><span class="n">handler</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span>
-  <span class="n">path</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:splat</span><span class="o">].</span><span class="n">first</span></pre></div>
+  <span class="n">path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">path_info</span>
+
+  <span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">extname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-15'>
+    <tr id='section-19'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-15">&#182;</a>
+          <a class="pilcrow" href="#section-19">&#182;</a>
         </div>
-        <p>If the path is empty, it&rsquo;s a request for the index page. Otherwise, we
-render the <code>HAML</code> template with the same name.</p>
+        <p>This is the most straight-forward way to remove the extension from a while
+while preserving it&rsquo;s original path information.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre>  <span class="n">haml</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="p">?</span> <span class="ss">:index</span> <span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">to_sym</span>
+        <div class='highlight'><pre>  <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">chomp</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-20'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-20">&#182;</a>
+        </div>
+        <p>If the path is empty, it&rsquo;s a request for the index page.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">path</span> <span class="o">=</span> <span class="ss">:index</span> <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-21'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p>We&rsquo;re rendering templates, so we need to convert to a symbol for Sinatra &mdash;
+otherwise it will think we&rsquo;re rending a string.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">to_sym</span>
+
+  <span class="k">case</span> <span class="n">extension</span>
+  <span class="k">when</span> <span class="s2">&quot;.css&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-22'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-22">&#182;</a>
+        </div>
+        <p>If a request for, say, &lsquo;/stylesheets/screen.css&rsquo; wasn&rsquo;t matched by the
+public handler, then we try to render a sass template with the same name.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">sass</span> <span class="n">path</span>
+  <span class="k">else</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-23'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-23">&#182;</a>
+        </div>
+        <p>Otherwise, we fall back to always rendering haml.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>    <span class="n">haml</span> <span class="n">path</span>
+  <span class="k">end</span>
 <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-16'>
+    <tr id='section-24'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-16">&#182;</a>
+          <a class="pilcrow" href="#section-24">&#182;</a>
         </div>
-        <p>Now we bind our handler to all of the <code>HTTP</code> verbs.</p>
+        <p>Now we bind our handler to all of the <code>HTTP</code> verbs. Matching against <code>//</code> is
+shorthand for matching all request paths: since <code>//</code> always returns true when
+matched against a string, our handler will run on every request. We could
+also write <code>get %r{/(.*)}, &amp;handler</code>.. but that just looks ugly!</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre><span class="n">get</span>    <span class="s2">&quot;/*&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span>
-<span class="n">put</span>    <span class="s2">&quot;/*&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span>
-<span class="n">post</span>   <span class="s2">&quot;/*&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span>
-<span class="n">delete</span> <span class="s2">&quot;/*&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span></pre></div>
+        <div class='highlight'><pre><span class="n">get</span><span class="sr">    //, &amp;handler</span>
+<span class="sr">put    /</span><span class="o">/</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span>
+<span class="n">post</span><span class="sr">   //, &amp;handler</span>
+<span class="sr">delete /</span><span class="o">/</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span></pre></div>
       </td>
     </tr>
-    <tr id='section-17'>
+    <tr id='section-25'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-17">&#182;</a>
+          <a class="pilcrow" href="#section-25">&#182;</a>
         </div>
         <p>And that&rsquo;s it! We let Sinatra handle the rest: it will parse out any provided
 options (see <code>haml-server -h</code>) and then run the server for us.</p>
