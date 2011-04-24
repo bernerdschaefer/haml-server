@@ -29,14 +29,38 @@
 #
 # Visiting `http://localhost:4567/` will render `index.haml`. Visiting
 # `/path/to/resource` will render `path/to/resource.haml`. Simple.
-#
-# You can also create a file called "layout.haml" to apply a layout to each of
+
+##### Layouts
+
+# You can also create a file called `layout.haml` to apply a layout to each of
 # your pages:
 #
 #     # layout.haml
 #     %html
 #       %body
 #         = yield
+
+##### SASS
+
+# If you want to use SASS templates, you can either define them inline using
+# HAML's filters, like so:
+#
+#     # index.haml
+#     %html
+#       %head
+#         :sass
+#           .content
+#             width: 10px
+#
+# Or you can write them to a standalone file, and then link to the same file
+# but with ".css" instead of ".sass". So if you had `/stylesheets/screen.sass`,
+# then you might do this in your layout:
+#
+#     # layout.haml
+#     %html
+#       %head
+#         :css
+#           @import url(/stylesheets/screen.css);
 
 #### The code
 
@@ -80,23 +104,44 @@ get "/favicon.ico" do
   404
 end
 
-# This is our basic handler for all requests that come through to Sinatra. We
-# match `GET`, `PUT`, `POST`, and `DELETE` requests with "/*", and Sinatra the
-# path in `params[:splat]`. Since we've only got one splat, we grab the first
-# one.
+# This is our basic handler for all requests that come through to Sinatra.
+# We'll extract the necessary path information, and then render either a haml
+# or sass file.
 handler = lambda do
-  path = params[:splat].first
+  path = request.path_info
 
-  # If the path is empty, it's a request for the index page. Otherwise, we
-  # render the `HAML` template with the same name.
-  haml path == "" ? :index : path.to_sym
+  extension = File.extname(path)
+
+  # This is the most straight-forward way to remove the extension from a while
+  # while preserving it's original path information.
+  path = path.chomp(extension)
+
+  # If the path is empty, it's a request for the index page.
+  path = :index if path == "/"
+
+  # We're rendering templates, so we need to convert to a symbol for Sinatra --
+  # otherwise it will think we're rending a string.
+  path = path.to_sym
+
+  case extension
+  when ".css"
+    # If a request for, say, '/stylesheets/screen.css' wasn't matched by the
+    # public handler, then we try to render a sass template with the same name.
+    sass path
+  else
+    # Otherwise, we fall back to always rendering haml.
+    haml path
+  end
 end
 
-# Now we bind our handler to all of the `HTTP` verbs.
-get    "/*", &handler
-put    "/*", &handler
-post   "/*", &handler
-delete "/*", &handler
+# Now we bind our handler to all of the `HTTP` verbs. Matching against `//` is
+# shorthand for matching all request paths: since `//` always returns true when
+# matched against a string, our handler will run on every request. We could
+# also write `get %r{/(.*)}, &handler`.. but that just looks ugly!
+get    //, &handler
+put    //, &handler
+post   //, &handler
+delete //, &handler
 
 # And that's it! We let Sinatra handle the rest: it will parse out any provided
 # options (see `haml-server -h`) and then run the server for us.
