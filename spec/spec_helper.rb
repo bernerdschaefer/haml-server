@@ -7,7 +7,7 @@ ENV["RACK_ENV"] = "test"
 
 load "bin/haml-server"
 
-Rspec.configure do |config|
+RSpec.configure do |config|
 
   config.include Rack::Test::Methods
 
