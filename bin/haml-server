@@ -67,6 +67,9 @@
 # `HAML`, check!
 require "haml"
 
+# `SASS`, check!
+require "sass"
+
 # Okay. In any other context, this would be pretty evil. Let me explain.
 # Sinatra is a well-behaving citizen, and calls `ARGV.dup` before parsing its
 # options.  Unfortunately for us, that means if we want to easily add

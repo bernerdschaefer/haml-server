@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "sinatra"
   s.add_runtime_dependency "haml"
+  s.add_runtime_dependency "sass"
 
   s.files         = %w(README bin/haml-server)
   s.executables   = %w(haml-server)
