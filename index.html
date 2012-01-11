@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8">
   <title>haml-server</title>
-  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
 </head>
 <body>
 <div id='container'>
@@ -116,7 +116,7 @@ haml-server -p 8000 sub/dir
         <div class="pilwrap">
           <a class="pilcrow" href="#section-8">&#182;</a>
         </div>
-        <p>You can also create a file called &ldquo;layout.haml&rdquo; to apply a layout to each of
+        <p>You can also create a file called <code>layout.haml</code> to apply a layout to each of
 your pages:</p>
 
 <pre><code># layout.haml
@@ -171,6 +171,180 @@ then you might do this in your layout:</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
+    <tr id='section-Helpers'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Helpers">&#182;</a>
+        </div>
+        <h4>Helpers</h4>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-12'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-12">&#182;</a>
+        </div>
+        <p>You can create a file called <code>helpers.rb</code> to define any helpers you might
+want to make available.</p>
+
+<pre><code># helpers.rb
+require "pygmentize"
+
+def highlight(code, format)
+  Pygmentize.process(code, format)
+end
+
+alias hi highlight
+</code></pre>
+
+<p>And then in your views, you can access the helpers:</p>
+
+<pre><code># index.haml
+
+%h3 Example code
+~ hi "puts '1 + 2 # =&gt; 3'", :ruby
+</code></pre>
+
+<p>The helpers are reloaded before each request, so you can add and remove them
+without restarting the server.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Running_on_Heroku_(cedar_stack)'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Running_on_Heroku_(cedar_stack)">&#182;</a>
+        </div>
+        <h3>Running on Heroku (cedar stack)</h3>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-14'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-14">&#182;</a>
+        </div>
+        <p>With Heroku&rsquo;s cedar stack, it&rsquo;s now super easy to deploy your <code>haml-server</code>
+site for anyone to see. Here&rsquo;s a step-by-step walkthrough for deploying to
+Heroku, with some recommendations for how to structe the site.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Structure'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Structure">&#182;</a>
+        </div>
+        <h4>Structure</h4>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-16'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-16">&#182;</a>
+        </div>
+        <p>Since we&rsquo;ll be adding some additional files to get things wired up, I
+recommend you move your views and static files into a separate folder like
+<code>site</code> (the walkthrough will assume that you&rsquo;ve done so). So your site might
+look like this:</p>
+
+<pre><code>&gt; tree
+.
+├── helpers.rb
+└── site
+    ├── index.haml
+    ├── layout.haml
+    └── screen.css
+</code></pre>
+
+<p>When working locally, then, you&rsquo;ll want to run the site with: <code>haml-server
+site</code>.</p>
+
+<p>Now to get things set up for Heroku, we&rsquo;ll need to add a few files:</p>
+
+<pre><code># Gemfile
+source :rubygems
+gem "haml-server"
+
+# Procfile
+web: bundle exec haml-server -p $PORT site
+</code></pre>
+
+<p>Now the project should look like this:</p>
+
+<pre><code>&gt; tree
+.
+├── Gemfile
+├── Procfile
+├── helpers.rb
+└── site
+    ├── index.haml
+    ├── layout.haml
+    └── screen.css
+</code></pre>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-Deploy'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-Deploy">&#182;</a>
+        </div>
+        <h4>Deploy</h4>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-18'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-18">&#182;</a>
+        </div>
+        <p>First we&rsquo;ll need to get our environment in order by running:</p>
+
+<pre><code>&gt; gem install bundler
+&gt; bundle
+</code></pre>
+
+<p>This will install any dependencies, and store those in a file called
+<code>Gemfile.lock</code>.</p>
+
+<p>Now we should set up the site as a <code>git</code> repository, and commit our files.</p>
+
+<pre><code>&gt; git init
+&gt; git add .
+&gt; git commit -m "Initial commit"
+</code></pre>
+
+<p>We&rsquo;re almost done! Now we&rsquo;ll create a new application and deploy it:</p>
+
+<pre><code>&gt; gem install heroku
+&gt; heroku apps:create --stack cedar
+&gt; git push heroku master
+&gt; heroku open
+</code></pre>
+
+<p><code>heroku open</code> will open up your site in the browser. Done!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
     <tr id='section-The_code'>
       <td class=docs>
         <div class="pilwrap">
@@ -182,10 +356,10 @@ then you might do this in your layout:</p>
         <div class='highlight'><pre></pre></div>
       </td>
     </tr>
-    <tr id='section-12'>
+    <tr id='section-20'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-12">&#182;</a>
+          <a class="pilcrow" href="#section-20">&#182;</a>
         </div>
         <p><code>HAML</code>, check!</p>
       </td>
@@ -193,10 +367,21 @@ then you might do this in your layout:</p>
         <div class='highlight'><pre><span class="nb">require</span> <span class="s2">&quot;haml&quot;</span></pre></div>
       </td>
     </tr>
-    <tr id='section-13'>
+    <tr id='section-21'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-13">&#182;</a>
+          <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p><code>SASS</code>, check!</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="nb">require</span> <span class="s2">&quot;sass&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-22'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-22">&#182;</a>
         </div>
         <p>Okay. In any other context, this would be pretty evil. Let me explain.
 Sinatra is a well-behaving citizen, and calls <code>ARGV.dup</code> before parsing its
@@ -211,10 +396,10 @@ Should be clear which one I prefer.</p>
 <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-14'>
+    <tr id='section-23'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-14">&#182;</a>
+          <a class="pilcrow" href="#section-23">&#182;</a>
         </div>
         <p>Yep. This is a hack, too. Sinatra only automatically runs itself when the
 file is directly called &mdash; but that&rsquo;s not the case when running through
@@ -224,10 +409,10 @@ rubygem&rsquo;s wrapped command. Solution? Just pretend we were executed directl
         <div class='highlight'><pre><span class="vg">$0</span> <span class="o">=</span> <span class="bp">__FILE__</span></pre></div>
       </td>
     </tr>
-    <tr id='section-15'>
+    <tr id='section-24'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-15">&#182;</a>
+          <a class="pilcrow" href="#section-24">&#182;</a>
         </div>
         <p>And now we can load sinatra, knowing that the options will be parsed out of
 <code>ARGV</code> and the server will start automatically.</p>
@@ -236,10 +421,10 @@ rubygem&rsquo;s wrapped command. Solution? Just pretend we were executed directl
         <div class='highlight'><pre><span class="nb">require</span> <span class="s2">&quot;sinatra&quot;</span></pre></div>
       </td>
     </tr>
-    <tr id='section-16'>
+    <tr id='section-25'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-16">&#182;</a>
+          <a class="pilcrow" href="#section-25">&#182;</a>
         </div>
         <p>I love Pathname. This line works just like you&rsquo;d expect it to:</p>
 
@@ -253,14 +438,14 @@ Pathname("/data/foo") + "/data" # =&gt; /data
 
 <span class="n">template_dir</span> <span class="o">=</span> <span class="no">Pathname</span><span class="p">(</span><span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="no">ARGV</span><span class="o">.</span><span class="n">shift</span> <span class="o">||</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
 
-<span class="n">set</span> <span class="ss">:public</span><span class="p">,</span> <span class="n">template_dir</span>
-<span class="n">set</span> <span class="ss">:views</span> <span class="p">,</span> <span class="n">template_dir</span></pre></div>
+<span class="n">set</span> <span class="ss">:public_folder</span><span class="p">,</span> <span class="n">template_dir</span>
+<span class="n">set</span> <span class="ss">:views</span><span class="p">,</span> <span class="n">template_dir</span></pre></div>
       </td>
     </tr>
-    <tr id='section-17'>
+    <tr id='section-26'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-17">&#182;</a>
+          <a class="pilcrow" href="#section-26">&#182;</a>
         </div>
         <p>If a favicon wasn&rsquo;t already matched by the public handler, just return a 404.</p>
       </td>
@@ -270,26 +455,92 @@ Pathname("/data/foo") + "/data" # =&gt; /data
 <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-18'>
+    <tr id='section-27'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-18">&#182;</a>
+          <a class="pilcrow" href="#section-27">&#182;</a>
+        </div>
+        <p>This will be a container module for user-defined helpers. <code>Helpers.reload!</code>
+will clean up any existing methods in the module, and then load helpers
+defined in a <code>helpers.rb</code> file if it exists.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">module</span> <span class="nn">Helpers</span>
+  <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
+    <span class="k">def</span> <span class="nf">reload!</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-28'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-28">&#182;</a>
+        </div>
+        <p>First we remove all instance methods in the helper module.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="nb">instance_methods</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">method</span><span class="o">|</span>
+        <span class="n">remove_method</span><span class="p">(</span><span class="nb">method</span><span class="p">)</span>
+      <span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-29'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-29">&#182;</a>
+        </div>
+        <p>And now we load any helper methods into the module from the file
+<code>helpers.rb</code> if it exists.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>      <span class="nb">module_eval</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;helpers.rb&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="s2">&quot;helpers.rb&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-30'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-30">&#182;</a>
+        </div>
+        <p>Include our module into the Sinatra application.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">helpers</span> <span class="no">Helpers</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-31'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-31">&#182;</a>
         </div>
         <p>This is our basic handler for all requests that come through to Sinatra.
 We&rsquo;ll extract the necessary path information, and then render either a haml
 or sass file.</p>
       </td>
       <td class=code>
-        <div class='highlight'><pre><span class="n">handler</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span>
+        <div class='highlight'><pre><span class="n">handler</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-32'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-32">&#182;</a>
+        </div>
+        <p>Reload our helpers for each request.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="no">Helpers</span><span class="o">.</span><span class="n">reload!</span>
+
   <span class="n">path</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">path_info</span>
 
   <span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">extname</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-19'>
+    <tr id='section-33'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-19">&#182;</a>
+          <a class="pilcrow" href="#section-33">&#182;</a>
         </div>
         <p>This is the most straight-forward way to remove the extension from a while
 while preserving it&rsquo;s original path information.</p>
@@ -298,10 +549,10 @@ while preserving it&rsquo;s original path information.</p>
         <div class='highlight'><pre>  <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">chomp</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span></pre></div>
       </td>
     </tr>
-    <tr id='section-20'>
+    <tr id='section-34'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-20">&#182;</a>
+          <a class="pilcrow" href="#section-34">&#182;</a>
         </div>
         <p>If the path is empty, it&rsquo;s a request for the index page.</p>
       </td>
@@ -309,10 +560,10 @@ while preserving it&rsquo;s original path information.</p>
         <div class='highlight'><pre>  <span class="n">path</span> <span class="o">=</span> <span class="ss">:index</span> <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;/&quot;</span></pre></div>
       </td>
     </tr>
-    <tr id='section-21'>
+    <tr id='section-35'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-21">&#182;</a>
+          <a class="pilcrow" href="#section-35">&#182;</a>
         </div>
         <p>We&rsquo;re rendering templates, so we need to convert to a symbol for Sinatra &mdash;
 otherwise it will think we&rsquo;re rending a string.</p>
@@ -324,10 +575,10 @@ otherwise it will think we&rsquo;re rending a string.</p>
   <span class="k">when</span> <span class="s2">&quot;.css&quot;</span></pre></div>
       </td>
     </tr>
-    <tr id='section-22'>
+    <tr id='section-36'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-22">&#182;</a>
+          <a class="pilcrow" href="#section-36">&#182;</a>
         </div>
         <p>If a request for, say, &lsquo;/stylesheets/screen.css&rsquo; wasn&rsquo;t matched by the
 public handler, then we try to render a sass template with the same name.</p>
@@ -337,10 +588,10 @@ public handler, then we try to render a sass template with the same name.</p>
   <span class="k">else</span></pre></div>
       </td>
     </tr>
-    <tr id='section-23'>
+    <tr id='section-37'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-23">&#182;</a>
+          <a class="pilcrow" href="#section-37">&#182;</a>
         </div>
         <p>Otherwise, we fall back to always rendering haml.</p>
       </td>
@@ -350,10 +601,10 @@ public handler, then we try to render a sass template with the same name.</p>
 <span class="k">end</span></pre></div>
       </td>
     </tr>
-    <tr id='section-24'>
+    <tr id='section-38'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-24">&#182;</a>
+          <a class="pilcrow" href="#section-38">&#182;</a>
         </div>
         <p>Now we bind our handler to all of the <code>HTTP</code> verbs. Matching against <code>//</code> is
 shorthand for matching all request paths: since <code>//</code> always returns true when
@@ -367,10 +618,10 @@ also write <code>get %r{/(.*)}, &amp;handler</code>.. but that just looks ugly!<
 <span class="sr">delete /</span><span class="o">/</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">handler</span></pre></div>
       </td>
     </tr>
-    <tr id='section-25'>
+    <tr id='section-39'>
       <td class=docs>
         <div class="pilwrap">
-          <a class="pilcrow" href="#section-25">&#182;</a>
+          <a class="pilcrow" href="#section-39">&#182;</a>
         </div>
         <p>And that&rsquo;s it! We let Sinatra handle the rest: it will parse out any provided
 options (see <code>haml-server -h</code>) and then run the server for us.</p>
