@@ -73,6 +73,47 @@ describe "haml-server" do
     CSS
   end
 
+  context "helpers" do
+    before do
+      file "helpers.haml", "= link_to 'test', '/test'"
+      file "helpers.rb", <<-RUBY
+      def link_to(text, uri)
+        %Q(<a href="\#{uri}">\#{text}</a>)
+      end
+      RUBY
+    end
+
+    it "loads helper methods" do
+      get '/helpers'
+      last_response.body.should include(%q(<a href="/test">test</a>))
+    end
+
+    it "reloads helper methods" do
+      get '/helpers'
+      last_response.body.should include(%q(<a href="/test">test</a>))
+
+      file "helpers.rb", <<-RUBY
+      def link_to(text, uri)
+        %Q(<a class="button" href="\#{uri}">\#{text}</a>)
+      end
+      RUBY
+
+      get '/helpers'
+      last_response.body.should include(%q(<a class="button" href="/test">test</a>))
+    end
+
+    it "cleans up old helper methods" do
+      get '/helpers'
+      last_response.body.should include(%q(<a href="/test">test</a>))
+
+      file "helpers.rb", <<-RUBY
+      def other_helper() end
+      RUBY
+
+      lambda { get '/helpers' }.should raise_exception(NoMethodError)
+    end
+  end
+
   def file(name, content)
     FileUtils.mkdir_p File.dirname(name)
 

@@ -62,6 +62,30 @@
 #         :css
 #           @import url(/stylesheets/screen.css);
 
+##### Helpers
+
+# You can create a file called `helpers.rb` to define any helpers you might
+# want to make available.
+#
+#     # helpers.rb
+#     require "pygmentize"
+#
+#     def highlight(code, format)
+#       Pygmentize.process(code, format)
+#     end
+#
+#     alias hi highlight
+#
+# And then in your views, you can access the helpers:
+#
+#     # index.haml
+#
+#     %h3 Example code
+#     ~ hi "puts '1 + 2 # => 3'", :ruby
+#
+# The helpers are reloaded before each request, so you can add and remove them
+# without restarting the server.
+
 #### The code
 
 # `HAML`, check!
@@ -107,10 +131,35 @@ get "/favicon.ico" do
   404
 end
 
+# This will be a container module for user-defined helpers. `Helpers.reload!`
+# will clean up any existing methods in the module, and then load helpers
+# defined in a `helpers.rb` file if it exists.
+module Helpers
+  class << self
+    def reload!
+      # First we remove all instance methods in the helper module.
+      instance_methods.each do |method|
+        remove_method(method)
+      end
+
+      # And now we load any helper methods into the module from the file
+      # `helpers.rb` if it exists.
+      module_eval(File.read("helpers.rb")) if File.file?("helpers.rb")
+    end
+  end
+end
+
+# Include our module into the Sinatra application.
+helpers Helpers
+
 # This is our basic handler for all requests that come through to Sinatra.
 # We'll extract the necessary path information, and then render either a haml
 # or sass file.
 handler = lambda do
+
+  # Reload our helpers for each request.
+  Helpers.reload!
+
   path = request.path_info
 
   extension = File.extname(path)
