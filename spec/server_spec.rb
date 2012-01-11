@@ -14,7 +14,7 @@ describe "haml-server" do
   around :each do |example|
     Dir.mktmpdir do |temp_dir|
       Dir.chdir temp_dir do
-        set :public, temp_dir
+        set :public_folder, temp_dir
         set :views, temp_dir
 
         example.run

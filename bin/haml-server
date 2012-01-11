@@ -96,8 +96,8 @@ require "pathname"
 
 template_dir = Pathname(Dir.pwd) + (ARGV.shift || ".")
 
-set :public, template_dir
-set :views , template_dir
+set :public_folder, template_dir
+set :views, template_dir
 
 # If a favicon wasn't already matched by the public handler, just return a 404.
 get "/favicon.ico" do
