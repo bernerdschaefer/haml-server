@@ -86,6 +86,75 @@
 # The helpers are reloaded before each request, so you can add and remove them
 # without restarting the server.
 
+#### Running on Heroku (cedar stack)
+
+# With Heroku's cedar stack, it's now super easy to deploy your `haml-server`
+# site for anyone to see. Here's a step-by-step walkthrough for deploying to
+# Heroku, with some recommendations for how to structe the site.
+
+##### Structure
+
+# Since we'll be adding some additional files to get things wired up, I
+# recommend you move your views and static files into a separate folder like
+# `site` (the walkthrough will assume that you've done so). So your site might
+# look like this:
+#
+#     > tree
+#     .
+#     ├── helpers.rb
+#     └── site
+#         ├── index.haml
+#         ├── layout.haml
+#         └── screen.css
+#
+# When working locally, then, you'll want to run the site with: `haml-server
+# site`.
+#
+# Now to get things set up for Heroku, we'll need to add a few files:
+#
+#     # Gemfile
+#     source :rubygems
+#     gem "haml-server"
+#
+#     # Procfile
+#     web: bundle exec haml-server -p $PORT site
+#
+# Now the project should look like this:
+#
+#     > tree
+#     .
+#     ├── Gemfile
+#     ├── Procfile
+#     ├── helpers.rb
+#     └── site
+#         ├── index.haml
+#         ├── layout.haml
+#         └── screen.css
+
+##### Deploy
+
+# First we'll need to get our environment in order by running:
+#     > gem install bundler
+#     > bundle
+#
+# This will install any dependencies, and store those in a file called
+# `Gemfile.lock`.
+#
+# Now we should set up the site as a `git` repository, and commit our files.
+#
+#     > git init
+#     > git add .
+#     > git commit -m "Initial commit"
+#
+# We're almost done! Now we'll create a new application and deploy it:
+#
+#     > gem install heroku
+#     > heroku apps:create --stack cedar
+#     > git push heroku master
+#     > heroku open
+#
+# `heroku open` will open up your site in the browser. Done!
+
 #### The code
 
 # `HAML`, check!
