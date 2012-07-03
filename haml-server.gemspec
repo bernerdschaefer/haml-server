@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = "haml-server"
-  s.version     = "0.3"
+  s.version     = "0.3.1"
   s.platform    = "ruby"
   s.authors     = ["Bernerd Schaefer"]
   s.email       = "bj.schaefer@gmail.com"

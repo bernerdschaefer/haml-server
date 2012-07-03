@@ -73,6 +73,20 @@ describe "haml-server" do
     CSS
   end
 
+  it "routes '/screen.css' to '/screen.scss'" do
+    file "screen.scss", <<-SCSS
+      .content
+        display: block
+    SCSS
+
+    get '/screen.css'
+
+    last_response.body.should == <<-CSS.fix_indent
+      .content {
+        display: block; }
+    CSS
+  end
+
   context "helpers" do
     before do
       file "helpers.haml", "= link_to 'test', '/test'"
