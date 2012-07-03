@@ -248,7 +248,12 @@ handler = lambda do
   when ".css"
     # If a request for, say, '/stylesheets/screen.css' wasn't matched by the
     # public handler, then we try to render a sass template with the same name.
-    sass path
+    # Try scss first then fallback to sass.
+    begin
+      scss path
+    rescue
+      sass path
+    end
   else
     # Otherwise, we fall back to always rendering haml.
     haml path
