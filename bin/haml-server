@@ -246,9 +246,15 @@ handler = lambda do
 
   case extension
   when ".css"
-    # If a request for, say, '/stylesheets/screen.css' wasn't matched by the
-    # public handler, then we try to render a sass template with the same name.
-    sass path
+    begin
+      # If a request for, say, '/stylesheets/screen.css' wasn't matched by the
+      # public handler, then we try to render a sass template with the same name.
+      sass path
+    rescue Sass::SyntaxError => e
+      status 502
+      # Print the error as a comment, since unlike HTML responses it won't be handled by Rack.
+      "// Sass::SyntaxError: #{e.to_s}"
+    end
   else
     # Otherwise, we fall back to always rendering haml.
     haml path
