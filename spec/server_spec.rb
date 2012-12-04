@@ -51,6 +51,16 @@ describe "haml-server" do
     last_response.body.should include("<h1>Hello world!</h1>")
   end
 
+  it "throw execption for bad HAML" do
+    file "bad.haml", "%"
+
+    expect {
+      get '/bad'
+    }.to raise_error(Haml::SyntaxError)
+
+    # will be handled and displayed via Rack
+  end
+
   it "renders static files" do
     file "test.html", "<h1>Hi</h1>"
 
@@ -71,6 +81,17 @@ describe "haml-server" do
       .content {
         display: block; }
     CSS
+  end
+
+  it "prints SASS compilation errors in the response" do
+    file "bad.sass", <<-SASS
+      bad(
+    SASS
+
+    get '/bad.css'
+
+    last_response.status.should eq(502)
+    last_response.body.should include('Sass::SyntaxError')
   end
 
   context "helpers" do
